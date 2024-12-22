@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Admin_API } from "../http/AXIOSAPI";
+import { STATUSES } from "./statuses";
 
 
 const authSlice = createSlice({
@@ -7,7 +8,8 @@ const authSlice = createSlice({
     initialState : {
         authData : null,
         alertData : null,
-        status : null
+        status : null,
+        error : null
     },
     reducers : {
         setAuthData(state, action){
@@ -18,12 +20,15 @@ const authSlice = createSlice({
         }, 
         setStatus(state, action){
             state.status = action.payload
+        },
+        setError(state, action){
+            state.error = action.payload
         }
     }
 })
 
 
-export const {setAuthData, setAlertData, setStatus} = authSlice.actions
+export const {setAuthData, setAlertData, setStatus, setError} = authSlice.actions
 export default authSlice.reducer
 
 
@@ -33,8 +38,15 @@ export function login(formData){
             console.log('login triggred ')
             const response = await Admin_API.post('/admin-login', formData)
             console.log(response)
+
+            if(response.status == 200){
+                dispatch(setAuthData(response.data.message))
+                dispatch(setStatus(STATUSES.SUCCESS))
+                
+            }
         } catch (error) {
-            
+            dispatch(setStatus(STATUSES.ERROR))
+            dispatch(setError(error.response.data.message));
         }
     }
 }
