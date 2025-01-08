@@ -10,7 +10,7 @@ function Sidebar() {
         <div class=" items-center pb-4 justify-center shadow-md">
             <img alt="Your Company" src="src/assets/images/shopEase.png" className="mx-auto h-28 w-auto"/>
             <div className="flex text-xl items-center justify-center">
-            <h6 className="text-md uppercase text-black font-extrabold">Admin Dashboard</h6>
+            <h6 className="text-md uppercase text-blue-800 font-extrabold">Admin Dashboard</h6>
             </div>
 
         </div>
@@ -44,10 +44,10 @@ function Sidebar() {
             </div>
             </li>
             <li>
-            <a href="#" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800">
+            <Link to='/supplier-list' class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800">
                 <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-400"><i class="bx bx-shopping-bag"></i></span>
-                <span class="text-sm font-medium">Shopping</span>
-            </a>
+                <span class="text-sm font-medium">Supplier</span>
+            </Link>
             </li>
             <li>
             <a href="#" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800">

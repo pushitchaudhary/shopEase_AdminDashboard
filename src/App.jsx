@@ -6,6 +6,8 @@ import { store } from './store/store';
 import Dashboard from './pages/Dashboard/Dashboard';
 import CategoryList from './pages/Category/CategoryList';
 import AddCategory from './pages/Category/AddCategory';
+import SupplierList from './pages/Supplier/SupplierList';
+import AddSupplier from './pages/Supplier/AddSupplier';
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
           <Route path='/' element={<Dashboard/>} />
           <Route path='/category' element={<CategoryList/>}/>
           <Route path='/add-category' element={<AddCategory/>}/>
+          <Route path='/supplier-list' element={<SupplierList/>}/>
+          <Route path='/add-supplier' element={<AddSupplier/>}/>
         </Routes>
       </BrowserRouter>
     </Provider>
