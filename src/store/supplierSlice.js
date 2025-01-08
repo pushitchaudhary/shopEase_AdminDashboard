@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { Admin_API, AUTHENTICATED_ADMIN_API } from "../http/AXIOSAPI";
 
 const supplierSlice = createSlice({
     name : 'supplier',
@@ -27,3 +28,13 @@ const supplierSlice = createSlice({
 export const {setSupplierList, setAlertData, setStatus, setError} = supplierSlice.actions
 export default supplierSlice.reducer
 
+export function addSupplier(formData){
+    return async function addSupplierThunk(dispatch){
+        try {
+            const response = await AUTHENTICATED_ADMIN_API.post(formData)
+            console.log(response)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+}

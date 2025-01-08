@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
 import Sidebar from '../Components/Sidebar'
 import { Link } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { addSupplier } from '../../store/supplierSlice'
 
 function AddSupplier() {
+    const dispatch = useDispatch()
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [phone, setPhone] = useState('')
@@ -24,6 +27,7 @@ function AddSupplier() {
         formData.append('status', status)
         formData.append('profile', profile)
 
+        dispatch(addSupplier(formData))
 
     }
 

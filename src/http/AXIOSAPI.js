@@ -10,14 +10,14 @@ const Admin_API = axios.create({
 })
 
 
-// const INSTITUTE_TEACHER_AUTHENTICATED_API = axios.create({
-//     baseURL : 'http://localhost:4000/api/admin/',
-//     headers : {
-//         'Content-Type' : 'application/json',
-//         Accept : 'application/json',
-//         'Authorization' : `${localStorage.getItem('instituteTeacherToken')}`
-//     }
-// })
+const AUTHENTICATED_ADMIN_API = axios.create({
+    baseURL : 'http://localhost:4000/api/admin/',
+    headers : {
+        'Content-Type' : 'application/json',
+        Accept : 'application/json',
+        'Authorization' : `${localStorage.getItem('adminJWT')}`
+    }
+})
 
 // const INSTITUTE_TEACHER_AUTHENTICATED_FILE_API = axios.create({
 //     baseURL : 'http://localhost:4000/api/admin/',
@@ -31,4 +31,4 @@ const Admin_API = axios.create({
 
 
 
-export   { Admin_API}
+export   { Admin_API, AUTHENTICATED_ADMIN_API}
