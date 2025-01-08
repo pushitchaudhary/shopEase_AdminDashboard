@@ -37,12 +37,10 @@ export function login(formData){
         try {
             console.log('login triggred ')
             const response = await Admin_API.post('/admin-login', formData)
-            console.log(response)
 
             if(response.status == 200){
-                dispatch(setAuthData(response.data.message))
                 dispatch(setStatus(STATUSES.SUCCESS))
-                
+                localStorage.setItem('adminJWT', response.data.message);
             }
         } catch (error) {
             dispatch(setStatus(STATUSES.ERROR))
