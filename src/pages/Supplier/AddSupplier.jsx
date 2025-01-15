@@ -1,8 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Sidebar from '../Components/Sidebar'
 import { Link } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { addSupplier } from '../../store/supplierSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { addSupplier, resetStatus } from '../../store/supplierSlice'
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
+import { STATUSES } from '../../store/statuses'
 
 function AddSupplier() {
     const dispatch = useDispatch()
@@ -15,6 +18,36 @@ function AddSupplier() {
     const [status, setStatus] = useState('')
     const [profile, setProfile] = useState(null)
 
+    // Import necessary hooks and utilities (assumed to be present)
+    const {alertData, supplierStatus, error} = useSelector((state)=>state.supplierData)
+
+    // Clear Form Values after successful submission
+    const clearFormValue = ()=>{
+        setName('')
+        setEmail('')
+        setPhone('')
+        setDateOfBirth('')
+        setGender('')
+        setAddress('')
+        setGender('Male')
+        setProfile(null)
+    }
+
+    // Tostify Alert
+    useEffect(()=>{
+        if(supplierStatus == STATUSES.SUCCESS){
+            toast.success(alertData || 'Successfully Supplier Added')
+            dispatch(resetStatus())
+            clearFormValue()
+        }else if(supplierStatus == STATUSES.ERROR){
+            toast.error(error || "Something went wrong !!")
+            dispatch(resetStatus())
+        }
+
+    },[alertData, supplierStatus, error])
+
+
+    // Submission 
     const handleSubmitBtn = (e)=>{
         e.preventDefault() 
         const formData = new FormData()
@@ -28,11 +61,13 @@ function AddSupplier() {
         formData.append('profile', profile)
 
         dispatch(addSupplier(formData))
+        
 
     }
 
     return (
     <>
+    <ToastContainer />
     <div className='flex '>
         <Sidebar/>
         <div class="bg-gray-100 p-8 rounded-md w-full">

@@ -1,12 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Admin_API, AUTHENTICATED_ADMIN_API } from "../http/AXIOSAPI";
+import {  AUTHENTICATED_ADMIN_API, AUTHENTICATED_ADMIN_FILE_API } from "../http/AXIOSAPI";
+import { STATUSES } from "./statuses";
 
 const supplierSlice = createSlice({
     name : 'supplier',
     initialState : {
         supplierList : null,
         alertData : null,
-        status : null,
+        supplierStatus : null,
         error : null
     },
     reducers : {
@@ -17,24 +18,31 @@ const supplierSlice = createSlice({
             state.alertData = action.payload
         },
         setStatus(state, action){
-            state.status = action.payload
+            state.supplierStatus = action.payload
         },
         setError(state, action){
             state.error = action.payload
+        },
+        resetStatus(state){
+            state.status = null
         }
     }
 })
 
-export const {setSupplierList, setAlertData, setStatus, setError} = supplierSlice.actions
+export const {setSupplierList, setAlertData, setStatus, setError, resetStatus} = supplierSlice.actions
 export default supplierSlice.reducer
 
 export function addSupplier(formData){
     return async function addSupplierThunk(dispatch){
         try {
-            const response = await AUTHENTICATED_ADMIN_API.post(formData)
-            console.log(response)
+            const response = await AUTHENTICATED_ADMIN_FILE_API.post('/add-supplier', formData)
+            if(response.status == 200){
+                dispatch(setStatus(STATUSES.SUCCESS))
+                dispatch(setAlertData(response.data.message))
+            }
         } catch (error) {
-            console.log(error)
+            dispatch(setStatus(STATUSES.ERROR))
+            dispatch(setError(error.response.data.message))
         }
     }
 }
