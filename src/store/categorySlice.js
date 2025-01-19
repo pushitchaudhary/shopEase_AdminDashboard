@@ -1,4 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { AUTHENTICATED_ADMIN_API } from "../http/AXIOSAPI";
+import { STATUSES } from "./statuses";
 
 
 const categorySlice = createSlice({
@@ -6,7 +8,7 @@ const categorySlice = createSlice({
     initialState : {
         categoryList : null,
         alertData : null,
-        status : null,
+        categoryStatus : null,
         error : null
     },
     reducers : {
@@ -17,23 +19,31 @@ const categorySlice = createSlice({
             state.alertData = action.payload
         },
         setStatus(state, action){
-            state.status = action.payload
+            state.categoryStatus = action.payload
         },
         setError(state, action){
             state.error = action.payload
+        },
+        resetStatus(state){
+            state.categoryStatus = null
         }
     }
 })
 
-export const {setCategoryList, setAlertData, setStatus, setError} = categorySlice.actions
+export const {setCategoryList, setAlertData, setStatus, setError, resetStatus} = categorySlice.actions
 export default categorySlice.reducer
 
 export function addCategory(formData){
     return async function addCategoryThunk(dispatch){
         try {
-            // const response = await 
+            const response = await AUTHENTICATED_ADMIN_API.post('/category',formData)
+            if(response.status == 200){
+                dispatch(setAlertData(response.data.message))
+                dispatch(setStatus(STATUSES.SUCCESS))
+            }
         } catch (error) {
-            
+            dispatch(setError(error.response.data.message))
+            dispatch(setStatus(STATUSES.ERROR))
         }
     }
 }

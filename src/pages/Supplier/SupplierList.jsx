@@ -1,10 +1,48 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Sidebar from '../Components/Sidebar'
 import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { deleteSupplier, fetchSupplierList, resetStatus } from '../../store/supplierSlice'
+import { STATUSES } from '../../store/statuses'
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
+import { confirmAndDelete } from '../../service/DeleteAndConfirm'
 
 function SupplierList() {
+  const dispatch = useDispatch()
+  const {supplierList,alertData, supplierStatus, error} = useSelector((state)=>state.supplierData)
+
+  // Fetch Supplier list
+  useEffect(()=>{
+    dispatch(fetchSupplierList())
+  },[])
+
+  // Delete Supplier
+  const deleteSupplierHandler = async (supplierId)=>{
+    await confirmAndDelete(async () => {
+      const response = await dispatch(deleteSupplier(supplierId))
+      if (response.status == 200) {
+        dispatch(fetchSupplierList())
+        return { status: 200, message : "The supplier was successfully deleted." }; // Return failure if the API succeeds
+      }else if(response.status != 401){
+        return { status: 400, message : "Failed to delete the supplier. Please try again later." }; // Return success if the API fails
+      }
+     
+    });
+  }
+
+  // Tostify Alert
+  useEffect(()=>{
+    if(supplierStatus == STATUSES.ERROR){
+      toast.error(error || "Something went wrong !!")
+      dispatch(resetStatus())
+    }
+  },[alertData, supplierStatus, error, dispatch])
+
+
   return (
     <>
+    <ToastContainer/>
     <div className='flex'>
       <Sidebar/>
       <div class="bg-white p-8 rounded-md w-full">
@@ -13,12 +51,6 @@ function SupplierList() {
             <h2 class="text-blue-800 text-xl font-semibold uppercase">Supplier</h2>
           </div>
           <div class="flex items-center justify-between">
-            <div class="flex bg-gray-50 items-center p-2 rounded-md">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-              </svg>
-              <input class="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..."/>
-            </div>
               <div class="lg:ml-40 ml-10 space-x-8">
                 <Link to='/add-supplier' class="bg-teal-500 px-4 py-3 rounded-md text-white font-semibold tracking-wide cursor-pointer">Add Supplier</Link>
                 <button class="bg-teal-500 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">Export</button>
@@ -40,36 +72,76 @@ function SupplierList() {
                     <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"> Address</th>
                     <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Created at</th>
                     <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"> Status</th>
+                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"> Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <div class="flex items-center">
-                        <div class="flex-shrink-0 w-10 h-10">
-                          <img class="w-full h-full rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.2&w=160&h=160&q=80" alt="" />
-                        </div>
-                        <div class="ml-3">
-                          <p class="text-gray-900 whitespace-no-wrap"> Vera Carpenter </p>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">Admin</p>
-                    </td>
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap"> Jan 21, 2020</p>
-                    </td>
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap"> 43</p>
-                    </td>
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                        <span aria-hidden class="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
-                        <span class="relative">Activo</span>
-                      </span>
-                    </td>
-                  </tr>
+                   {
+                    supplierList ? <>
+                    {
+                      supplierList && supplierList.map((supplier, index)=>(
+                        <tr>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-xs">
+                          <p class="text-gray-900 whitespace-no-wrap">{index+1}</p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-xs">
+                          <div class="flex items-center">
+                            <div class="flex-shrink-0 w-10 h-10">
+                              <img class="w-full h-full rounded-full" src={supplier?.profilePictureUrl} alt={supplier?.name} />
+                            </div>
+                            <div class="ml-3">
+                              <p class="text-gray-900 whitespace-no-wrap"> {supplier?.name} </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-xs">
+                          <p class="text-gray-900 whitespace-no-wrap">{supplier?.email}</p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-xs">
+                          <p class="text-gray-900 whitespace-no-wrap"> {supplier?.phoneNumber}</p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-xs">
+                          <p class="text-gray-900 whitespace-no-wrap"> {supplier?.dateOfBirth}</p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-xs">
+                          <p class="text-gray-900 whitespace-no-wrap"> {supplier?.gender}</p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-xs">
+                          <p class="text-gray-900 whitespace-no-wrap"> {supplier?.address}</p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-xs">
+                          <p class="text-gray-900 whitespace-no-wrap"> {new Date(supplier?.createdAt).toLocaleDateString()} {new Date(supplier?.createdAt).toLocaleTimeString()}</p>
+                        </td>
+                        {
+                          supplier?.status == 1 ? <>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-xs">
+                              <p class="text-gray-900 whitespace-no-wrap"> Active</p>
+                            </td>
+                          </> : <>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-red text-xs">
+                              <p class="text-gray-900 whitespace-no-wrap"> Deactive</p>
+                            </td>
+                          </>
+                        }
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-xs">
+                          <Link to={`/edit-supplier/${supplier.id}`}>
+                          <span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
+                            <span  aria-hidden class="absolute cursor-pointer inset-0 bg-green-200 opacity-50 rounded-full"></span>
+                            <span class="relative">Edit</span>
+                          </span>
+                          </Link>
+                          <span onClick={()=>deleteSupplierHandler(supplier.id)} class="relative cursor-pointer mt-3 inline-block px-3 py-1 text-xs font-semibold text-green-900 leading-tight">
+                            <span aria-hidden class="absolute inset-0 bg-red-200 opacity-50 rounded-full"></span>
+                            <span class="relative">Delete</span>
+                          </span>
+                        </td>
+                      </tr>
+                      ))
+                    }
+                    </> 
+                    : <>xhain</>
+                   }
+                  
                 
                 </tbody>
               </table>

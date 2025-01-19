@@ -1,15 +1,21 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Sidebar from '../Components/Sidebar'
 import { Link } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { addCategory } from '../../store/categorySlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { addCategory, resetStatus } from '../../store/categorySlice'
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
+import { STATUSES } from '../../store/statuses'
 
 function AddCategory() {
     const dispatch = useDispatch()
     const [categoryName, setCategoryName] = useState('')
     const [status, setStatus] = useState(0)
 
+    const {alertData, categoryStatus, error}  = useSelector((state)=>state.categoryData)
 
+
+    // Handle Submit Button
     const handleSubmit = (e)=>{
         e.preventDefault()
         const formData = new FormData()
@@ -18,8 +24,20 @@ function AddCategory() {
         dispatch(addCategory(formData))
     }
 
+    // Tostify Alert
+    useEffect(()=>{
+        if(categoryStatus == STATUSES.SUCCESS){
+            toast.success(alertData || "Successfully Cateogory Added")
+            dispatch(resetStatus())
+        }else if(categoryStatus == STATUSES.ERROR){
+            toast.error(error || "Something went wrong !!")
+            dispatch(resetStatus())
+        }
+    },[alertData, categoryStatus, error, dispatch])
+
     return (
     <>
+    <ToastContainer/>
     <div className='flex bg-gray-100'>
         <Sidebar/>
         <div className='w-full mt-4 ml-4'>
@@ -48,7 +66,7 @@ function AddCategory() {
                             </select>
                         </div>
                         <div>
-                            <button onClick={handleSubmit} class="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-base font-semibold text-white outline-none">
+                            <button onClick={handleSubmit} class="hover:shadow-form rounded-md bg-teal-500 py-3 px-8 text-base font-semibold text-white outline-none">
                                 Add 
                             </button>
                         </div>

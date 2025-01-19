@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import Logo from '../../assets/images/shopEase.png';
 
 function Sidebar() {
   return (
@@ -8,7 +9,7 @@ function Sidebar() {
     <div class="min-h-screen flex flex-row bg-gray-100">
         <div class="flex flex-col w-80 bg-white rounded-r-3xl overflow-hidden">
         <div class=" items-center pb-4 justify-center shadow-md">
-            <img alt="Your Company" src="src/assets/images/shopEase.png" className="mx-auto h-28 w-auto"/>
+            <img alt="Your Company" src={Logo} className="mx-auto h-28 w-auto"/>
             <div className="flex text-xl items-center justify-center">
             <h6 className="text-md uppercase text-blue-800 font-extrabold">Admin Dashboard</h6>
             </div>

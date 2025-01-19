@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Sidebar from '../Components/Sidebar'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { addSupplier, resetStatus } from '../../store/supplierSlice'
+import { addSupplier, fetchSingleSupplierDetails, resetStatus, updateSupplierDetails } from '../../store/supplierSlice'
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 import { STATUSES } from '../../store/statuses'
 
-function AddSupplier() {
+function EditSupplier() {
     const dispatch = useDispatch()
+    const supplierId = useParams().supplierId
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [phone, setPhone] = useState('')
@@ -20,30 +21,33 @@ function AddSupplier() {
     const fileInputRef = useRef(null);
 
     // Import necessary hooks and utilities (assumed to be present)
-    const {alertData, supplierStatus, error} = useSelector((state)=>state.supplierData)
+    const {singleSupplierData, alertData, supplierStatus, error} = useSelector((state)=>state.supplierData)
 
-    // Clear Form Values after successful submission
-    const clearFormValue = ()=>{
-        console.log('trigged clearFormValue')
-        setName('')
-        setEmail('')
-        setPhone('')
-        setDateOfBirth('')
-        setGender('')
-        setAddress('')
-        setGender('Male')
-        setProfile(null)
-        if (fileInputRef.current) {
-            fileInputRef.current.value = null; // Reset the file input
+    // Fetch Single Supplier Value
+    useEffect(()=>{
+        dispatch(fetchSingleSupplierDetails(supplierId))
+    },[])
+
+    // Storing Value in field
+    useEffect(()=>{
+        if(singleSupplierData){
+            setName(singleSupplierData.name)
+            setEmail(singleSupplierData.email)
+            setPhone(singleSupplierData.phoneNumber)
+            setDateOfBirth(singleSupplierData.dateOfBirth)
+            setGender(singleSupplierData.gender)
+            setAddress(singleSupplierData.address)
+            setStatus(singleSupplierData.status)
         }
-    }
+    },[singleSupplierData])
+    
 
     // Tostify Alert
     useEffect(()=>{
         if(supplierStatus == STATUSES.SUCCESS){
             toast.success(alertData || 'Successfully Supplier Added')
             dispatch(resetStatus())
-            clearFormValue()
+            // clearFormValue()
         }else if(supplierStatus == STATUSES.ERROR){
             toast.error(error || "Something went wrong !!")
             dispatch(resetStatus())
@@ -52,7 +56,7 @@ function AddSupplier() {
     },[alertData, supplierStatus, error, dispatch])
 
     // Submission 
-    const handleSubmitBtn = (e)=>{
+    const handleUpdateSubmitBtn = (e)=>{
         e.preventDefault() 
         const formData = new FormData()
         formData.append('name', name)
@@ -63,11 +67,7 @@ function AddSupplier() {
         formData.append('address', address)
         formData.append('status', status)
         formData.append('profile', profile)
-
-
-        dispatch(addSupplier(formData))
-        
-
+        dispatch(updateSupplierDetails(supplierId, formData))
     }
 
     return (
@@ -82,14 +82,14 @@ function AddSupplier() {
                     <h2 class="text-blue-800 text-xl font-semibold hover:underline uppercase">Supplier</h2>
                     </Link>
                     <h2 class="text-black text-xl px-1 font-bold uppercase">{' > '}</h2>
-                    <h2 class="text-blue-800 text-xl font-semibold uppercase">Add Supplier</h2>
+                    <h2 class="text-blue-800 text-xl font-semibold uppercase">Edit Supplier</h2>
                 </div>
             </div>
             <div className='mt-4'>
                 <div class="bg-white border-4 rounded-lg shadow relative ">
                     <div class="flex items-start justify-between p-5 border-b rounded-t">
                         <h3 class="text-xl font-semibold">
-                            Add Supplier
+                            Edit Supplier
                         </h3>
                     </div>
                     <div class="p-6 space-y-6">
@@ -139,7 +139,7 @@ function AddSupplier() {
                         </form>
                     </div>
                     <div class="p-6 border-t border-gray-200 rounded-b">
-                        <button onClick={handleSubmitBtn} class="text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center" type="submit">Save all</button>
+                        <button onClick={handleUpdateSubmitBtn} class="text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center" type="submit">Update</button>
                     </div>
                 </div>
             </div>
@@ -149,4 +149,4 @@ function AddSupplier() {
   )
 }
 
-export default AddSupplier
+export default EditSupplier
