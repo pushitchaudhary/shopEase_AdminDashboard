@@ -1,10 +1,49 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Sidebar from '../Components/Sidebar'
 import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { deleteCategoryDetails, fetchCategoryList, resetStatus } from '../../store/categorySlice'
+import { confirmAndDelete } from '../../service/DeleteAndConfirm'
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
+import { STATUSES } from '../../store/statuses'
 
 function CategoryList() {
-  return (
+    const dispatch = useDispatch()
+
+    const {categoryList, categoryStatus, error} = useSelector((state)=>state.categoryData)
+
+    // Fetching Category List
+    useEffect(()=>{
+        dispatch(fetchCategoryList())
+    },[])   
+
+    // Delete Supplier
+    const deleteCategoryHandler = async (categoryId)=>{
+        await confirmAndDelete(async () => {
+            const response = await dispatch(deleteCategoryDetails(categoryId))
+            if (response.status == 200) {
+                dispatch(fetchCategoryList())
+                return { status: 200, message : "The category was successfully deleted." }; // Return failure if the API succeeds
+            }else if(response.status != 401){
+                return { status: 400, message : "Failed to delete the category. Please try again later." }; // Return success if the API fails
+            }
+            
+        });
+    }
+
+    // Tostify Alert
+    useEffect(()=>{
+        if(categoryStatus == STATUSES.ERROR){
+        toast.error(error || "Something went wrong !!")
+        dispatch(resetStatus())
+        }
+    },[ categoryStatus, error, dispatch])
+
+
+    return (
     <>
+    <ToastContainer/>
     <div className='flex bg-gray-100'>
         <Sidebar/>
         <div className='w-full mt-4 ml-4'>
@@ -23,20 +62,39 @@ function CategoryList() {
                         <table class="text-left w-full border-collapse"> 
                         <thead>
                             <tr>
+                                <th class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">S.N</th>
                                 <th class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">Name</th>
                                 <th class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">Status</th>
+                                <th class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">Last Updated</th>
                                 <th class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="hover:bg-grey-lighter">
-                                <td class="py-4 px-6 border-b border-grey-light">New York</td>
-                                <td class="py-4 px-6 border-b border-grey-light">New York</td>
-                                <td class="py-4 px-6 border-b border-grey-light">
-                                    <a href="#" class="text-grey-lighter font-bold py-1 px-3 rounded text-xs bg-green hover:bg-green-dark">Edit</a>
-                                    <a href="#" class="text-grey-lighter font-bold py-1 px-3 rounded text-xs bg-blue hover:bg-blue-dark">View</a>
-                                </td>
-                            </tr>
+                            {
+                                categoryList ? <> 
+                                {
+                                    categoryList && categoryList.map((category, index)=>(
+                                        <tr class="hover:bg-grey-lighter">
+                                            <td class="py-4 px-6 border-b border-grey-light">{index+1}</td>
+                                            <td class="py-4 px-6 border-b border-grey-light">{category?.name}</td>
+                                            {
+                                                category.status == 1 ? <>
+                                                    <td class="py-4 px-6 border-b border-grey-light">Active</td>
+                                                </> : <>
+                                                    <td class="py-4 px-6 border-b border-grey-light">Deactive</td>
+                                                </>
+                                            }
+                                            <td class="py-4 px-6 border-b border-grey-light">{new Date(category?.updatedAt).toDateString()}</td>
+                                            <td class="py-4 px-6 border-b border-grey-light">
+                                                <Link to={`/edit-category/${category.id}`} href="#" class="text-grey-lighter mr-2 font-bold py-1 px-3 rounded text-xs bg-green-300 hover:bg-green-dark">Edit</Link>
+                                                <a onClick={()=>deleteCategoryHandler(category.id)} class="text-grey-lighter cursor-pointer font-bold py-1 px-3 rounded text-xs bg-red-300 hover:bg-blue-dark">Delete</a>
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
+                                </> : <>Data Xhain</>
+                            }
+                           
                         </tbody>
                         </table>
                     </div>

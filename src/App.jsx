@@ -9,6 +9,7 @@ import AddCategory from './pages/Category/AddCategory';
 import SupplierList from './pages/Supplier/SupplierList';
 import AddSupplier from './pages/Supplier/AddSupplier';
 import EditSupplier from './pages/Supplier/EditSupplier';
+import EditCategory from './pages/Category/EditCategory';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path='/' element={<Dashboard/>} />
           <Route path='/category' element={<CategoryList/>}/>
           <Route path='/add-category' element={<AddCategory/>}/>
+          <Route path='/edit-category/:categoryId' element={<EditCategory/>}/>
           <Route path='/supplier-list' element={<SupplierList/>}/>
           <Route path='/add-supplier' element={<AddSupplier/>}/>
           <Route path='/edit-supplier/:supplierId' element={<EditSupplier/>}/>

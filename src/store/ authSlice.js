@@ -35,12 +35,10 @@ export default authSlice.reducer
 export function login(formData){
     return async function loginThunk(dispatch){
         try {
-            console.log('login triggred ')
             const response = await Admin_API.post('/admin-login', formData)
-
             if(response.status == 200){
                 dispatch(setStatus(STATUSES.SUCCESS))
-                localStorage.setItem('adminJWT', response.data.message);
+                localStorage.setItem('UserJWT', response.data.message);
             }
         } catch (error) {
             dispatch(setStatus(STATUSES.ERROR))

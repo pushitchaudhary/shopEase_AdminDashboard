@@ -15,7 +15,7 @@ const AUTHENTICATED_ADMIN_API = axios.create({
     headers : {
         'Content-Type' : 'application/json',
         Accept : 'application/json',
-        'Authorization' : `${localStorage.getItem('adminJWT')}`
+        'Authorization' : `${localStorage.getItem('UserJWT')}`
     }
 })
 
@@ -24,7 +24,7 @@ const AUTHENTICATED_ADMIN_FILE_API = axios.create({
     headers : {
         'Content-Type' : 'multipart/form-data',
         Accept : 'application/json',
-        'Authorization' : `${localStorage.getItem('adminJWT')}`
+        'Authorization' : `${localStorage.getItem('UserJWT')}`
     }
 })
 
