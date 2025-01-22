@@ -8,6 +8,7 @@ const categorySlice = createSlice({
     initialState : {
         categoryList : null,
         singleCategoryDetail : null,
+        categoryList_StatusON : null,
         alertData : null,
         categoryStatus : null,
         error : null
@@ -18,6 +19,9 @@ const categorySlice = createSlice({
         },
         setSingleCategoryDetail(state, action){
             state.singleCategoryDetail = action.payload
+        },
+        setCategoryList_StatusON(state, action){
+            state.categoryList_StatusON = action.payload
         },
         setAlertData(state, action){
             state.alertData = action.payload
@@ -34,7 +38,7 @@ const categorySlice = createSlice({
     }
 })
 
-export const {setCategoryList, setSingleCategoryDetail, setAlertData, setStatus, setError, resetStatus} = categorySlice.actions
+export const {setCategoryList, setSingleCategoryDetail, setCategoryList_StatusON, setAlertData, setStatus, setError, resetStatus} = categorySlice.actions
 export default categorySlice.reducer
 
 export function addCategory(formData){
@@ -115,6 +119,20 @@ export function deleteCategoryDetails(categoryId){
             else{
                 return {status : 400, message : 'Failed to delete supplier.'}
             }   
+        }
+    }
+}
+
+export function fetchCategoryList_StatusON(){
+    return async function fetchCategoryList_StatusONThunk(dispatch){
+        try {
+            const response = await AUTHENTICATED_ADMIN_API.get('/category-list-status-on')
+            if(response.status == 200){
+                dispatch(setCategoryList_StatusON(response.data.message))
+            }
+        } catch (error) {
+            dispatch(setError(error.response.data.message))
+            dispatch(setStatus(STATUSES.ERROR))
         }
     }
 }

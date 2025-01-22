@@ -10,6 +10,8 @@ import SupplierList from './pages/Supplier/SupplierList';
 import AddSupplier from './pages/Supplier/AddSupplier';
 import EditSupplier from './pages/Supplier/EditSupplier';
 import EditCategory from './pages/Category/EditCategory';
+import AddProduct from './pages/Product/AddProduct';
+import ProductList from './pages/Product/ProductList';
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
           <Route path='/supplier-list' element={<SupplierList/>}/>
           <Route path='/add-supplier' element={<AddSupplier/>}/>
           <Route path='/edit-supplier/:supplierId' element={<EditSupplier/>}/>
+          <Route path='/product-list' element={<ProductList/>}/>
+          <Route path='/add-product' element={<AddProduct/>}/>
         </Routes>
       </BrowserRouter>
     </Provider>

@@ -7,6 +7,7 @@ const supplierSlice = createSlice({
     initialState : {
         supplierList : null,
         singleSupplierData : null,
+        supplierList_StatusON : null,
         alertData : null,
         supplierStatus : null,
         error : null
@@ -17,6 +18,9 @@ const supplierSlice = createSlice({
         },
         setSingleSupplier(state, action){
             state.singleSupplierData = action.payload
+        },
+        setSupplierList_StatusON(state, action){
+            state.supplierList_StatusON = action.payload
         },
         setAlertData(state, action){
             state.alertData = action.payload
@@ -33,7 +37,7 @@ const supplierSlice = createSlice({
     }
 })
 
-export const {setSupplierList, setSingleSupplier, setAlertData, setStatus, setError, resetStatus} = supplierSlice.actions
+export const {setSupplierList, setSupplierList_StatusON, setSingleSupplier, setAlertData, setStatus, setError, resetStatus} = supplierSlice.actions
 export default supplierSlice.reducer
 
 export function addSupplier(formData){
@@ -108,6 +112,20 @@ export function updateSupplierDetails(supplierId, formData){
             if(response.status == 200){
                 dispatch(setAlertData(response.data.message))
                 dispatch(setStatus(STATUSES.SUCCESS))
+            }
+        } catch (error) {
+            dispatch(setError(error.response.data.message))
+            dispatch(setStatus(STATUSES.ERROR))
+        }
+    }
+}
+
+export function fetchSupplierList_StatusON(){
+    return async function fetchSupplierList_StatusONThunk(dispatch){
+        try {
+            const response = await AUTHENTICATED_ADMIN_API.get('/supplier-list-status-on')
+            if(response.status == 200){
+                dispatch(setSupplierList_StatusON(response.data.message))
             }
         } catch (error) {
             dispatch(setError(error.response.data.message))
