@@ -12,6 +12,10 @@ import EditSupplier from './pages/Supplier/EditSupplier';
 import EditCategory from './pages/Category/EditCategory';
 import AddProduct from './pages/Product/AddProduct';
 import ProductList from './pages/Product/ProductList';
+import EditProduct from './pages/Product/EditProduct';
+import StaffList from './pages/Staff/StaffList';
+import AddStaff from './pages/Staff/AddStaff';
+import EditStaff from './pages/Staff/EditStaff';
 
 function App() {
   return (
@@ -28,6 +32,10 @@ function App() {
           <Route path='/edit-supplier/:supplierId' element={<EditSupplier/>}/>
           <Route path='/product-list' element={<ProductList/>}/>
           <Route path='/add-product' element={<AddProduct/>}/>
+          <Route path='/edit-product/:productId' element={<EditProduct/>}/>
+          <Route path='/staff-list' element={<StaffList/>}/>
+          <Route path='/add-staff' element={<AddStaff/>}/>
+          <Route path='/edit-staff/:staffId' element={<EditStaff/>}/>
         </Routes>
       </BrowserRouter>
     </Provider>

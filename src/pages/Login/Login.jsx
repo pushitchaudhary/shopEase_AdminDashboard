@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { STATUSES } from '../../store/statuses';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { login } from '../../store/ authSlice';
+import { login } from '../../store/authSlice';
 
 function Login() {
   const dispatch = useDispatch();

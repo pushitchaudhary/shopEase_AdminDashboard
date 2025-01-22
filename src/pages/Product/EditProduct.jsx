@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Sidebar from '../Components/Sidebar'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { addSupplier, fetchSupplierList_StatusON } from '../../store/supplierSlice'
+import {  fetchSupplierList_StatusON } from '../../store/supplierSlice'
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 import { STATUSES } from '../../store/statuses'
-import { addProduct, resetStatus } from '../../store/productSlice'
+import { fetchSingleProductDetail, resetStatus, updateProductDetails } from '../../store/productSlice'
 import { fetchCategoryList_StatusON } from '../../store/categorySlice'
 
-function AddProduct() {
+function EditProduct() {
+    const productId = useParams().productId
     const dispatch = useDispatch()
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
@@ -23,31 +24,29 @@ function AddProduct() {
     const fileInputRef = useRef(null);
 
     // Import necessary hooks and utilities (assumed to be present)
-    const {alertData, productStatus, error} = useSelector((state)=>state.productData)
+    const {singleProductDetail, alertData, productStatus, error} = useSelector((state)=>state.productData)
     const {categoryList_StatusON} = useSelector((state)=>state.categoryData)
     const {supplierList_StatusON} = useSelector((state)=>state.supplierData)
 
-    // Clear Form Values after successful submission
-    const clearFormValue = ()=>{
-        console.log('trigged clearFormValue')
-        setName('')
-        setDescription('')
-        setPrice('')
-        setStockQuantity('')
-        setWeight('')
-        setCategoryId('')
-        setSupplierId('')
-        setStatus()
-        setProductImage(null)
-        if (fileInputRef.current) {
-            fileInputRef.current.value = null; // Reset the file input
-        }
-    }
-
     useEffect(()=>{
+        dispatch(fetchSingleProductDetail(productId))
         dispatch(fetchCategoryList_StatusON())
         dispatch(fetchSupplierList_StatusON())
     },[])
+
+    useEffect(()=>{
+        if(singleProductDetail){
+            setName(singleProductDetail?.name)
+            setDescription(singleProductDetail?.description)
+            setPrice(singleProductDetail?.price)
+            setStockQuantity(singleProductDetail?.stockQuantity)
+            setCategoryId(singleProductDetail?.categoryId)
+            setSupplierId(singleProductDetail?.supplierId)
+            setWeight(singleProductDetail?.weight)
+            setStatus(singleProductDetail?.status)
+        }
+
+    },[singleProductDetail])
 
     // Tostify Alert
     useEffect(()=>{
@@ -62,7 +61,7 @@ function AddProduct() {
     },[alertData, productStatus, error, dispatch])
 
     // Submission 
-    const handleSubmitBtn = (e)=>{
+    const handleUpdateBtn = (e)=>{
         e.preventDefault() 
         const formData = new FormData()
         formData.append('name', name)
@@ -74,8 +73,7 @@ function AddProduct() {
         formData.append('supplierId', supplierId)
         formData.append('status', status)
         formData.append('productImage', productImage)
-        dispatch(addProduct(formData))
-        clearFormValue()
+        dispatch(updateProductDetails(productId, formData))
     }
 
     return (
@@ -90,14 +88,14 @@ function AddProduct() {
                     <h2 class="text-blue-800 text-xl font-semibold hover:underline uppercase">Product</h2>
                     </Link>
                     <h2 class="text-black text-xl px-1 font-bold uppercase">{' > '}</h2>
-                    <h2 class="text-blue-800 text-xl font-semibold uppercase">Add Product</h2>
+                    <h2 class="text-blue-800 text-xl font-semibold uppercase">Edit Product</h2>
                 </div>
             </div>
             <div className='mt-4'>
                 <div class="bg-white border-4 rounded-lg shadow relative ">
                     <div class="flex items-start justify-between p-5 border-b rounded-t">
                         <h3 class="text-xl font-semibold">
-                            Add Product
+                            Edit Product
                         </h3>
                     </div>
                     <div class="p-6 space-y-6">
@@ -158,7 +156,7 @@ function AddProduct() {
                         </form>
                     </div>
                     <div class="p-6 border-t border-gray-200 rounded-b">
-                        <button onClick={handleSubmitBtn} class="text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center" type="submit">Save</button>
+                        <button onClick={handleUpdateBtn} class="text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center" type="submit">Update</button>
                     </div>
                 </div>
             </div>
@@ -168,4 +166,4 @@ function AddProduct() {
   )
 }
 
-export default AddProduct
+export default EditProduct

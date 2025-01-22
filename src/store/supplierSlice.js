@@ -64,7 +64,7 @@ export function fetchSupplierList(){
             }
         } catch (error) {
             dispatch(setError('Something went wrong !!!'))
-            dispatch(STATUSES.ERROR)
+            dispatch(setStatus(STATUSES.ERROR))
         }
     }
 }
