@@ -16,6 +16,8 @@ import EditProduct from './pages/Product/EditProduct';
 import StaffList from './pages/Staff/StaffList';
 import AddStaff from './pages/Staff/AddStaff';
 import EditStaff from './pages/Staff/EditStaff';
+import Profile from './pages/Profile/Profile';
+import EditProfile from './pages/Profile/EditProfile';
 
 function App() {
   return (
@@ -36,6 +38,8 @@ function App() {
           <Route path='/staff-list' element={<StaffList/>}/>
           <Route path='/add-staff' element={<AddStaff/>}/>
           <Route path='/edit-staff/:staffId' element={<EditStaff/>}/>
+          <Route path='/profile' element={<Profile/>}/>
+          <Route path='/edit-profile' element={<EditProfile/>}/>
         </Routes>
       </BrowserRouter>
     </Provider>
