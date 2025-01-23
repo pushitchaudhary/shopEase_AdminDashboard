@@ -60,13 +60,15 @@ function Profile() {
                     {profileDetails ? <>
                         <div class="flex items-center space-x-4 mt-2">
                             <Link to='/edit-profile'>
-                                <button class="flex items-center bg-blue-600 hover:bg-blue-700 text-gray-100 px-4 py-2 rounded text-sm space-x-2 transition duration-100">
+                                <button class="flex items-center bg-cyan-600 hover:bg-blue-700 text-gray-100 px-4 py-2 rounded text-sm space-x-2 transition duration-100">
                                     <span>Edit Profile</span>
                                 </button>
                             </Link>
-                            <button class="flex items-center bg-blue-600 hover:bg-blue-700 text-gray-100 px-4 py-2 rounded text-sm space-x-2 transition duration-100">
-                                <span>Change Password</span>
-                            </button>
+                            <Link to='/change-password'>
+                                <button class="flex items-center bg-cyan-600 hover:bg-blue-700 text-gray-100 px-4 py-2 rounded text-sm space-x-2 transition duration-100">
+                                    <span>Change Password</span>
+                                </button>
+                            </Link>
                         </div>
                         </> : ""
                     }

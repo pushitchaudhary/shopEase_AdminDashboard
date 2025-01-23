@@ -62,3 +62,19 @@ export function updateProfileDetails(formData){
         }
     }
 }
+
+
+export function changePassword(formData){
+    return async function changePasswordThunk(dispatch){
+        try {
+            const response = await AUTHENTICATED_ADMIN_API.patch('/password-change',formData)
+            if(response.status == 200){
+                dispatch(setAlertData(response.data.message))
+                dispatch(setProfileStatus(STATUSES.SUCCESS))
+            }
+        } catch (error) {
+            dispatch(setError(error.response.data.message))
+            dispatch(setProfileStatus(STATUSES.ERROR))
+        }
+    }
+}
