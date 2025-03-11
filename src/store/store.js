@@ -5,6 +5,7 @@ import categorySlice from './categorySlice'
 import productSlice from './productSlice'
 import staffSlice from './staffSlice'
 import profileSlice from './profileSlice'
+import infoSlice from './infoSlice'
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
     categoryData : categorySlice,
     productData : productSlice,
     staffData : staffSlice,
-    profileData : profileSlice
+    profileData : profileSlice,
+    infoData : infoSlice
   },
 })

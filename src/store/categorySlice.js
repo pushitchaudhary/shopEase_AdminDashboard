@@ -127,6 +127,7 @@ export function fetchCategoryList_StatusON(){
     return async function fetchCategoryList_StatusONThunk(dispatch){
         try {
             const response = await AUTHENTICATED_ADMIN_API.get('/category-list-status-on')
+            console.log(response)
             if(response.status == 200){
                 dispatch(setCategoryList_StatusON(response.data.message))
             }

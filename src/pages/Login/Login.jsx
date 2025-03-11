@@ -17,7 +17,7 @@ function Login() {
     useEffect(() => {
         if (status === STATUSES.SUCCESS || authData) {
             toast.success('Login successful!');
-            navigate('/');
+            window.location.href = '/'; 
         } else if (status === STATUSES.ERROR) {
             toast.error(error || 'Login failed. Please try again.');
         }
@@ -39,7 +39,7 @@ function Login() {
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             <img alt="Your Company" src="src/assets/images/shopEase.png" className="mx-auto h-28 w-auto"/>
             <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-                Sign in to your account
+                Sign in to your account (ADMIN)
             </h2>
         </div>
 
@@ -60,9 +60,7 @@ function Login() {
                         Password
                     </label>
                     <div className="text-sm">
-                        <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500" >
-                            Forgot password?
-                        </a>
+                     
                     </div>
                 </div>
                 <div className="mt-2">

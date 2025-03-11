@@ -27,6 +27,8 @@ function AddProduct() {
     const {categoryList_StatusON} = useSelector((state)=>state.categoryData)
     const {supplierList_StatusON} = useSelector((state)=>state.supplierData)
 
+
+    console.log(categoryList_StatusON)
     // Clear Form Values after successful submission
     const clearFormValue = ()=>{
         console.log('trigged clearFormValue')

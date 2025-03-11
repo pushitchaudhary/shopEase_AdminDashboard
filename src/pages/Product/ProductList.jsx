@@ -54,7 +54,6 @@ function ProductList() {
           <div class="flex items-center justify-between">
               <div class="lg:ml-40 ml-10 space-x-8">
                 <Link to='/add-product' class="bg-teal-500 px-4 py-3 rounded-md text-white font-semibold tracking-wide cursor-pointer">Add Product</Link>
-                <button class="bg-teal-500 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">Export</button>
               </div>
             </div>
         </div>
